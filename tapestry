@@ -8,24 +8,45 @@ offset_x=(-x 0)
 offset_y=(-y 0)
 background=(-b "theme.bg_default")
 
-zparseopts -D -K h=help -help=help c=mode f=mode t=mode m=mode x:=offset_x y:=offset_y s:=screen i=ignore_aspect b:=background U=reload r=reload w=wipe
+zparseopts -D -K \
+	h=help -help=help \
+	c=mode -centered=mode \
+	f=mode -fit=mode \
+	b:=background -bgcolor:=background \
+	t=mode -tiled=mode \
+	m=mode -maximized=mode -fill=mode \
+	x:=offset_x y:=offset_y \
+	s:=screen -screen:=screen \
+	i=ignore_aspect -ignore-aspect=ignore_aspect \
+	r=reload -reload=reload w=wipe -wipe=wipe
 
 wall=${1:a}
 
 if [ -n "$help" ] || [ -z "$wall" ]; then
-	echo "usage: $0 [opts] file
-options:
-	-s      screen number
-	-c      centered
-	-f      fit
-	-t      tiled
-	-m      maximized
-	-x, -y  offset in x and y direction (for -t, -m)
-	-i      ignore_aspect (for -m)
-	-b      background color (for -c, -f)
-	-U, -r  reload from wallpaperrc
-	-w      wipe all current wallpaper settings and rewrite wallpaperrc. implies -u
-	"
+	echo "Usage: tapestry [opts] file
+Options:
+  Common:
+    -s, --screen         screen number
+    -r, --reload         reload from wallpaperrc
+    -w, --wipe           wipe all current wallpaper settings and rewrite
+                         wallpaperrc. implies -u
+
+  Modes:
+    -c, --centered       center image on screen
+    -f, --fit (default)  scale image to fit screen (adding bars if needed)
+    -t, --tiled          repeat image, if it is smaller than the screen
+    -m, --maximized      scale image to fill screen (never scales down)
+
+  For --maximized:
+    -i, --ignore-aspect  ignore image's aspect ratio instead of cutting parts
+
+  For --centered, --fit:
+    -b, --bgcolor        background color for parts not covered by wallpaper
+
+  For --tiled, --maximized:
+    -x                   horizontal offset
+    -y                   vertical offset
+"
 	exit 1
 fi
 
@@ -44,19 +65,19 @@ if [[ "${background[2]}" != "theme.bg_default" ]]; then
 fi
 
 case "$mode" in
-	-c)
+	-c|--centered)
 		method=centered
 		extra_args=", ${background[2]}"
 		;;
-	-f)
+	-f|--fit)
 		method=fit
 		extra_args=", ${background[2]}"
 		;;
-	-t)
+	-t|--tiled)
 		method=tiled
 		extra_args=", {x = ${offset_x[2]}, y = ${offset_y[2]}}"
 		;;
-	-m)
+	-m|--maximized|--fill)
 		method=maximized
 		if [ -n "${ignore_aspect}" ]; then
 			ignore_aspect=true
