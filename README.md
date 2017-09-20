@@ -106,7 +106,9 @@ return {
 ```
 
 If you edit the file by hand, keep the `return {` and `}` lines as they are, or
-the command line tool will no longer be able to parse it. In theory, any lua
-function can be the first entry to a wallpaper table, as long as it takes the
-wallpaper as first and the screen (awesome screen object, not index) as second
-parameter.
+the command line tool will no longer be able to parse it. Also, any changes
+outside the table will be lost on use of the tool.
+
+In theory, any lua function can be the first entry to a wallpaper table, as long
+as it takes the wallpaper as first and the screen (awesome screen object, not
+index) as second parameter.
