@@ -5,7 +5,7 @@ local awful     = require("awful")
 local wallpaperrc = awful.util.getdir("config") .. "/tapestry/wallpaperrc.lua"
 
 local function set_wallpaper(walls, s)
-	local wall= walls[s.index] or walls.default
+	local wall= walls[s.index] or walls.default or walls[next(walls)] or { gears.wallpaper.set, "black" }
 	local f = io.open(wall[2], "r")
 	if f~= nil then
 		io.close(f)
