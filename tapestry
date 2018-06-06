@@ -22,7 +22,7 @@ zparseopts -D -K \
 
 wall=${1:a}
 
-if [ -n "$help" ] || [ -z "$wall" ]; then
+if [[ -n "$help" ]] || [[ -z "$wall" && -z "$reload" ]]; then
 	echo "Usage: tapestry [opts] file
 Options:
   Common:
