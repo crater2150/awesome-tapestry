@@ -18,11 +18,12 @@ zparseopts -D -K \
 	b:=background -bgcolor:=background \
 	x:=offset_x y:=offset_y \
 	s:=screen -screen:=screen \
-	r=reload -reload=reload w=wipe -wipe=wipe
+	r=reload -reload=reload w=wipe -wipe=wipe \
+	q=query -query=query
 
 wall=${1:a}
 
-if [[ -n "$help" ]] || [[ -z "$wall" && -z "$reload" ]]; then
+if [[ -n "$help" ]] || [[ -z "$wall" && -z "$reload" && -z "$query" ]]; then
 	echo "Usage: tapestry [opts] file
 Options:
   Common:
@@ -30,6 +31,7 @@ Options:
     -r, --reload         reload from wallpaperrc
     -w, --wipe           wipe all current wallpaper settings and rewrite
                          wallpaperrc.
+    -q, --query          output current wallpaperrc
 
   Modes:
     -c, --centered       center image on screen
@@ -56,6 +58,15 @@ if [[ -n "$reload" ]]; then
 		echo "require(\"tapestry\")()" | awesome-client
 		exit 0
 	fi
+fi
+
+if [[ -n "$query" ]]; then
+	if [[ ! -e $WALLPAPERRC ]]; then
+		echo "No wallpaperrc found"
+	else
+		< $WALLPAPERRC
+	fi
+	if [[ -z "$wall" ]]; then exit 0; fi
 fi
 
 if [[ "${background[2]}" != "theme.bg_default" ]]; then
